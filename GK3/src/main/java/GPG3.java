@@ -23,7 +23,15 @@ class MyCanvas extends JComponent {
                     L[1] = GPG3.light[1] - vec[1];
                     L[2] = GPG3.light[2] - vec[2];
                     VOperations.normalize(L);
-                    double b = GPG3.Ia*GPG3.material.getKa()+GPG3.Ip*GPG3.material.getKd()*VOperations.dot(vec, L); //Math.pow(VOperations.dot(GPG3.light, vec), k) +
+                    double[] V = new double[3];
+                    V[0] = GPG3.watcher[0] - vec[0];
+                    V[1] = GPG3.watcher[1] - vec[1];
+                    V[2] = GPG3.watcher[2] - vec[2];
+                    VOperations.normalize(V);
+                    double[] r = VOperations.getReflection(L, vec);
+                    VOperations.normalize(r);
+                    double cos = VOperations.cosVectors(r,V);
+                    double b = GPG3.Ia*GPG3.material.getKa()+GPG3.Ip*GPG3.material.getKd()*VOperations.dot(vec, L)+ GPG3.Ip* GPG3.material.getKs()*Math.pow(cos,GPG3.material.getN()); //Math.pow(VOperations.dot(GPG3.light, vec), k) +
                     g.setColor(new Color((int) (color.getRed()*b), (int) (color.getBlue()*b), (int) (color.getGreen()*b)));
                     g.drawLine(i+(int)R, (j/2)+(int)R, i+(int)R, (j/2)+(int)R);
                 }
@@ -45,6 +53,7 @@ public class GPG3 extends JFrame implements KeyListener {
     public static double Ia = 0.7;
     public static double Ip = 0.7;
     public static double[] light = { 400, 400, -500 };
+    public static double[] watcher = { 0, 0, -500 };
     public static double krok = 100;
     GPG3(){
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
