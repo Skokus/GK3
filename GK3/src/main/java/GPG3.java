@@ -6,9 +6,7 @@ import java.awt.event.KeyListener;
 class MyCanvas extends JComponent {
     public void paint(Graphics g) {
         double R = 300;
-        double k = 0.12;
-        double ambient = 0.1;
-        Color color = Color.RED;
+        Color color = Color.WHITE;
         double[] vec = new double[3];
         for(int i = (int)Math.floor(-R); i <= (int)Math.ceil(R); i++){
             double x = i + .5; //+ .5;
@@ -17,14 +15,16 @@ class MyCanvas extends JComponent {
                 if(x * x + y * y <= R * R) {
                     vec[0] = x;
                     vec[1] = y;
-                    vec[2] = Math.sqrt(R * R - x * x - y * y);
-                    VOperations.normalize(vec);
-                    double b = ambient; //Math.pow(VOperations.dot(GPG3.light, vec), k) +
-                            System.out.println(b);
-                    int intensity = (b <= 0) ?
-                            GPG3.shades.length - 2 :
-                            (int)Math.max((1 - b) * (GPG3.shades.length - 1), 0);
-                    g.setColor(new Color((int)(color.getRed()*b), (int)(color.getBlue()*b),(int)(color.getGreen()*b)));
+                    double z = Math.sqrt(R * R - x * x - y * y);
+                    vec[2] = z; //N
+                    VOperations.normalize(vec); //N znormalizowane
+                    double[] L = new double[3];
+                    L[0] = GPG3.light[0] - vec[0];
+                    L[1] = GPG3.light[1] - vec[1];
+                    L[2] = GPG3.light[2] - vec[2];
+                    VOperations.normalize(L);
+                    double b = GPG3.Ia*GPG3.material.getKa()+GPG3.Ip*GPG3.material.getKd()*VOperations.dot(vec, L); //Math.pow(VOperations.dot(GPG3.light, vec), k) +
+                    g.setColor(new Color((int) (color.getRed()*b), (int) (color.getBlue()*b), (int) (color.getGreen()*b)));
                     g.drawLine(i+(int)R, (j/2)+(int)R, i+(int)R, (j/2)+(int)R);
                 }
             }
@@ -40,10 +40,12 @@ public class GPG3 extends JFrame implements KeyListener {
 
     static JFrame window = new JFrame();
     static MyCanvas currentCanvas = new MyCanvas();
-
+    public static Material material = Material.materials.get(0);
+    int i = 0;
+    public static double Ia = 0.7;
+    public static double Ip = 0.7;
     public static double[] light = { 400, 400, -500 };
-    public static char[] shades = {'.', ':', '!', '*', 'o', 'e', '&', '#', '%', '@'};
-
+    public static double krok = 100;
     GPG3(){
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.addKeyListener(this);
@@ -64,7 +66,36 @@ public class GPG3 extends JFrame implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-
+        int keyCode = e.getKeyCode();
+        switch (keyCode) {
+            case KeyEvent.VK_Z:
+                light[2] -= krok;
+                break;
+            case KeyEvent.VK_D:
+                light[0] -= krok;
+                break;
+            case KeyEvent.VK_A:
+                light[0] += krok;
+                break;
+            case KeyEvent.VK_X:
+                light[2] += krok;
+                break;
+            case KeyEvent.VK_W:
+                light[1] += krok;
+                break;
+            case KeyEvent.VK_S:
+                light[1] -= krok;
+                break;
+            case KeyEvent.VK_C:
+                i++;
+                material = Material.materials.get(i);
+                break;
+            case KeyEvent.VK_V:
+                i--;
+                material = Material.materials.get(i);
+                break;
+        }
+        currentCanvas.repaint();
     }
 
     @Override
