@@ -30,9 +30,15 @@ class MyCanvas extends JComponent {
                     VOperations.normalize(V);
                     double[] r = VOperations.getReflection(L, vec);
                     VOperations.normalize(r);
-                    double cos = VOperations.cosVectors(r,V);
-                    double b = GPG3.Ia*GPG3.material.getKa()+GPG3.Ip*GPG3.material.getKd()*VOperations.dot(vec, L)+ GPG3.Ip* GPG3.material.getKs()*Math.pow(cos,GPG3.material.getN()); //Math.pow(VOperations.dot(GPG3.light, vec), k) +
-                    g.setColor(new Color((int) (color.getRed()*b), (int) (color.getBlue()*b), (int) (color.getGreen()*b)));
+                    V[0] = -V[0];
+                    V[1] = -V[1];
+                    V[2] = -V[2];
+                    double cos = Math.max(VOperations.cosVectors(r,V),0);
+                    double b = GPG3.Ia * GPG3.material.getKa() + GPG3.material.getKd()*GPG3.Ip*VOperations.dot(vec, L) + 0.2*GPG3.Ip*GPG3.material.getKs()*Math.pow(cos,GPG3.material.getN());;
+                    g.setColor(new Color(Math.min((int) (color.getRed() * b), 255),
+                            Math.min((int) (color.getBlue() * b), 255),
+                            Math.min((int) (color.getGreen() * b), 255))
+                    );
                     g.drawLine(i+(int)R, (j/2)+(int)R, i+(int)R, (j/2)+(int)R);
                 }
             }
@@ -51,14 +57,14 @@ public class GPG3 extends JFrame implements KeyListener {
     public static Material material = Material.materials.get(0);
     int i = 0;
     public static double Ia = 0.7;
-    public static double Ip = 0.7;
+    public static double Ip = 0.9;
     public static double[] light = { 400, 400, -500 };
-    public static double[] watcher = { 0, 0, -500 };
+    public static double[] watcher = { 0, 0, 500 };
     public static double krok = 100;
     GPG3(){
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.addKeyListener(this);
-        window.setBounds(0, 0, 1000, 1000);
+        window.setBounds(0, 0, 700, 700);
         window.getContentPane().setBackground(Color.WHITE);
         window.add(currentCanvas);
         currentCanvas.repaint();

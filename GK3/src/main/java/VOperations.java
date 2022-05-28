@@ -20,10 +20,11 @@ public class VOperations {
 
     public static double[] getReflection(double[] d, double[] n){
         double[] r = new double[3];
-        double ddotn = dot(d, n);
-        r[0] = d[0] - 2*ddotn*n[0];
-        r[1] = d[1] - 2*ddotn*n[1];
-        r[2] = d[2] - 2*ddotn*n[2];
+        double[] nd = {-d[0], -d[1],-d[2]};
+        double ddotn = dot(nd, n);
+        r[0] = nd[0] - 2*ddotn*n[0];
+        r[1] = nd[1] - 2*ddotn*n[1];
+        r[2] = nd[2] - 2*ddotn*n[2];
         return r;
     }
 
