@@ -33,7 +33,7 @@ public class Material {
     public static Material getMaterial(int i) {
         int id;
         if (i < 0) {
-            id = (6 - Math.abs(i % materials.size())) % 6;
+            id = (7 - Math.abs(i % materials.size())) % 7;
         } else {
             id = i % materials.size();
         }
