@@ -20,15 +20,14 @@ public class VOperations {
 
     public static double[] getReflection(double[] d, double[] n){
         double[] r = new double[3];
-        double[] nd = {-d[0], -d[1],-d[2]};
-        double ddotn = dot(nd, n);
-        r[0] = nd[0] - 2*ddotn*n[0];
-        r[1] = nd[1] - 2*ddotn*n[1];
-        r[2] = nd[2] - 2*ddotn*n[2];
+        double ddotn = dot(d, n);
+        r[0] = 2*ddotn*n[0] - d[0];
+        r[1] = 2*ddotn*n[1] - d[1];
+        r[2] = 2*ddotn*n[2] - d[2];
         return r;
     }
 
-    public static double cosVectors(double[] a, double[] b){
-        return dot(a,b)/(length(a)*length(b));
+    public static double cosVectors(double[] x, double[] y){
+        return (x[0]*y[0] + x[1]*y[1] + x[2]*y[2])/(length(x)*length(y));
     }
 }

@@ -13,31 +13,30 @@ class MyCanvas extends JComponent {
             for(int j = (int)Math.floor(-2 * R); j <= (int)Math.ceil(2 * R); j++){
                 double y = j / 2. +.5;//+ .5;
                 if(x * x + y * y <= R * R) {
-                    vec[0] = x;
-                    vec[1] = y;
+                    vec[0] = 2*x;
+                    vec[1] = 2*y;
                     double z = Math.sqrt(R * R - x * x - y * y);
-                    vec[2] = z; //N
-                    VOperations.normalize(vec); //N znormalizowane
+                    vec[2] = 2*z; //N
                     double[] L = new double[3];
                     L[0] = GPG3.light[0] - vec[0];
                     L[1] = GPG3.light[1] - vec[1];
                     L[2] = GPG3.light[2] - vec[2];
-                    VOperations.normalize(L);
                     double[] V = new double[3];
                     V[0] = GPG3.watcher[0] - vec[0];
                     V[1] = GPG3.watcher[1] - vec[1];
                     V[2] = GPG3.watcher[2] - vec[2];
-                    VOperations.normalize(V);
+                    VOperations.normalize(vec); //N znormalizowane
+                    VOperations.normalize(L);
                     double[] r = VOperations.getReflection(L, vec);
+                    VOperations.normalize(V);
+                    V[0] = V[0];
+                    V[1] = V[1];
+                    V[2] = V[2];
                     VOperations.normalize(r);
-                    V[0] = -V[0];
-                    V[1] = -V[1];
-                    V[2] = -V[2];
-                    double cos = Math.max(VOperations.cosVectors(r,V),0);
-                    double b = GPG3.Ia * GPG3.material.getKa() + GPG3.material.getKd()*GPG3.Ip*VOperations.dot(vec, L) + 0.2*GPG3.Ip*GPG3.material.getKs()*Math.pow(cos,GPG3.material.getN());;
-                    g.setColor(new Color(Math.min((int) (color.getRed() * b), 255),
-                            Math.min((int) (color.getBlue() * b), 255),
-                            Math.min((int) (color.getGreen() * b), 255))
+                    double b = GPG3.Ia * GPG3.material.getKa() + GPG3.material.getKd()*GPG3.Ip*VOperations.dot(vec, L) + GPG3.Ip*GPG3.material.getKs()*Math.pow(VOperations.dot(r, V),GPG3.material.getN());
+                    g.setColor(new Color(Math.min((int) (color.getRed()* b), 255),
+                            Math.min((int)(color.getBlue()* b), 255),
+                            Math.min((int)(color.getGreen()* b), 255))
                     );
                     g.drawLine(i+(int)R, (j/2)+(int)R, i+(int)R, (j/2)+(int)R);
                 }

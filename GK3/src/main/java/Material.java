@@ -16,7 +16,7 @@ public class Material {
             add(new Material(0.5, 0.5, 0.5, 100));//Black rubber (͡°͜ʖ͡°)
         }
     };
-    public Material(double ka, double ks, double kd, double n) {
+    public Material(double ka, double kd, double ks, double n) {
         this.ka = ka;
         this.ks = ks;
         this.kd = kd;
