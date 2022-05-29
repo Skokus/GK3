@@ -1,3 +1,4 @@
+import java.awt.*;
 import java.util.ArrayList;
 
 public class Material {
@@ -6,30 +7,41 @@ public class Material {
     private double kd;
     private double n;
     private String name;
+    private final Color color;
 
     public static ArrayList<Material> materials = new ArrayList<>() {
         {
-            add(new Material(0.2125, 0.714, 0.3935, 25.6, "Bronze"));
-            add(new Material(0.19225, 0.50754, 0.508273, 51.2, "Silver"));
-            add(new Material(0.24725, 0.75164, 0.628281, 51.2, "Gold"));
-            add(new Material(0.329412, 0.780392, 0.992157, 27.8974, "Brass"));
-            add(new Material(0.25, 0.4, 0.774597, 76.8, "Chrome"));
-            add(new Material(0.5, 0.01, 0.4, 10, "Black Rubber"));
-            add(new Material(0.0, 0.01, 0.50, 32, "Black Plastic"));
+            add(new Material(0.2125, 0.714, 0.3935, 25.6, "Bronze", new Color(205, 127, 50)));
+            add(new Material(0.19225, 0.50754, 0.508273, 51.2, "Silver", new Color(192,192,192)));
+            add(new Material(0.24725, 0.75164, 0.628281, 51.2, "Gold", new Color(255,215,0)));
+            add(new Material(0.329412, 0.780392, 0.992157, 27.8974, "Brass", new Color(71,65,26)));
+            add(new Material(0.25, 0.4, 0.774597, 76.8, "Chrome", new Color(219,226,233)));
+            add(new Material(0.105882, 0.427451, 0.333333, 9.84615, "Pewter", new Color(142,146,148)));
         }
     };
 
-    public Material(double ka, double kd, double ks, double n, String name) {
+    public Material(double ka, double kd, double ks, double n, String name, Color color) {
         this.ka = ka;
         this.ks = ks;
         this.kd = kd;
         this.n = n;
         this.name = name;
+        this.color = color;
     }
 
     public static Material getMaterial(int i) {
-        int id = i % materials.size();
+        int id;
+        if (i < 0) {
+            id = (6 - Math.abs(i % materials.size())) % 6;
+        } else {
+            id = i % materials.size();
+        }
+        System.out.println(id);
         return materials.get(id);
+    }
+
+    public Color getColor() {
+        return color;
     }
 
     public String getName() {

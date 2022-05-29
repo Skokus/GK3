@@ -2,22 +2,14 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.ArrayList;
 
 class MyCanvas extends JComponent {
-    public static ArrayList<Color> colors = new ArrayList<>() {
-        {
-            add(Color.WHITE);
-            add(new Color(0, 234, 255));
-            add(new Color(102, 255, 0));
-            add(new Color(255, 58, 35));
-            add(new Color(255, 189, 0));
-        }
-    };
-    public Color color = colors.get(0);
+    public Color color;
+    boolean white = false;
 
     public void paint(Graphics g) {
         double R = 300;
+        color = (white) ? Color.WHITE : GPG3.material.getColor();
         double[] vec = new double[3];
         for(int i = (int)Math.floor(-R); i <= (int)Math.ceil(R); i++){
             double x = i + .5; //+ .5;
@@ -43,10 +35,10 @@ class MyCanvas extends JComponent {
                     VOperations.normalize(r);
                     double b = GPG3.Ia * GPG3.material.getKa() + GPG3.material.getKd()*GPG3.Ip*VOperations.dot(vec, L) + GPG3.Ip*GPG3.material.getKs()*Math.pow(VOperations.dot(r, V),GPG3.material.getN());
                     g.setColor(new Color(Math.min((int) (color.getRed()* b), 255),
-                            Math.min((int)(color.getBlue()* b), 255),
-                            Math.min((int)(color.getGreen()* b), 255))
+                            Math.min((int)(color.getGreen()* b), 255),
+                            Math.min((int)(color.getBlue()* b), 255))
                     );
-                    g.drawLine(i+(int)R, (j/2)+(int)R, i+(int)R, (j/2)+(int)R);
+                    g.drawLine(i+(int)R+20, (j/2)+(int)R+20, i+(int)R+20, (j/2)+(int)R+20);
                 }
             }
         }
@@ -113,11 +105,7 @@ public class GPG3 extends JFrame implements KeyListener {
             }
             case KeyEvent.VK_R -> {
                 j++;
-                currentCanvas.color = MyCanvas.colors.get(j % MyCanvas.colors.size());
-            }
-            case KeyEvent.VK_F -> {
-                j--;
-                currentCanvas.color = MyCanvas.colors.get(j % MyCanvas.colors.size());
+                currentCanvas.white = !currentCanvas.white;
             }
         }
         currentCanvas.repaint();
